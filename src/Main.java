@@ -1,17 +1,11 @@
-public class Main {
-    public static void main(String[] args) {
-        Createbasedate myDatabase = new Createbasedate();
-        myDatabase.newBasedate();
+import java.io.IOException;
 
+public class Main {
+    public static void main(String[] args) throws IOException {
         Admin isaac = new Admin();
         Animal newAnimal = new Animal();
 
-        newAnimal.setName();
-        newAnimal.setAge();
-        newAnimal.setRace();
-        newAnimal.setSpecie();
-        newAnimal.setDescription();
+        newAnimal.registerAnimal();
         newAnimal.addAnimal();
     }
-
 }

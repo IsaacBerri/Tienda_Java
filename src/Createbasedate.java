@@ -1,45 +1,34 @@
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class Createbasedate {
-
     public static Sheet sheet;
     public static Workbook workbook;
+    public static  int rows = 0;
 
-    public void newBasedate() {
-        workbook = new XSSFWorkbook();
-        sheet = workbook.createSheet("myDatabase");
 
-        Row row = sheet.createRow(0);
+    public static void newBasedate() throws IOException {
+        try {
+            // Intenta abrir el archivo Excel si ya existe
+            FileInputStream archivoEntrada = new FileInputStream("Database.xlsx");
+            workbook = WorkbookFactory.create(archivoEntrada);
+            archivoEntrada.close();
+        } catch (IOException e) {
+            // Si ocurre una excepción, el archivo no existe, así que lo creamos
+            workbook = new XSSFWorkbook();
 
-        String[] titlesBasedate = {"Id", "Name", "Age", "Race", "Specie", "Description"};
-
-        for (int i = 0; i < titlesBasedate.length; i++) {
-            Cell cell = row.createCell(i);
-            cell.setCellValue(titlesBasedate[i]);
-        }
-
-        /*Cell cell1 = row.createCell(0);
-        cell1.setCellValue("Id");
-
-        Cell cell2 = row.createCell(1);
-        cell2.setCellValue("Name");
-
-        Cell cell3 = row.createCell(2);
-        cell3.setCellValue("Race");
-
-        Cell cell3 = row.createCell(2);
-        cell3.setCellValue("Race");*/
-
-        try (FileOutputStream outputStream = new FileOutputStream("C:/Users/berri/OneDrive/Escritorio/Proyectos/c13/Modulo  3 - Java/projectFinal/database.xlsx")) {
-            workbook.write(outputStream);
-        }catch (Exception e){
-            e.printStackTrace();
+            try {
+                FileOutputStream archivoSalida = new FileOutputStream("Database.xlsx");
+                workbook.write(archivoSalida);
+                archivoSalida.close();
+            } catch (IOException e2) {
+                Tools.updateLogger(Level.SEVERE, "El libro de exel no se puedo crear");
+            }
         }
     }
 }
