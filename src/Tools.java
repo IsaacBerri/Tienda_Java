@@ -1,9 +1,6 @@
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -12,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class Tools{
+
     public static void updateLogger(Level level, String mensaje) throws IOException {
         FileHandler fileHandler = null;
 
@@ -31,25 +29,25 @@ public class Tools{
         }
     }
 
-    public static void createPage(String name, String[] array) {
-        if (Createbasedate.workbook != null) {
+    public static void createSheet(String name, String[] array) {
+        if (Database.workbook != null) {
 
-            Createbasedate.sheet = Createbasedate.workbook.getSheet(name);
+            Database.sheet = Database.workbook.getSheet(name);
 
-            if (Createbasedate.sheet == null) {
-                Createbasedate.sheet = Createbasedate.workbook.createSheet(name);
+            if (Database.sheet == null) {
+                Database.sheet = Database.workbook.createSheet(name);
             }
 
-            Row row = Createbasedate.sheet.createRow(0);
-            Createbasedate.rows = Createbasedate.sheet.getPhysicalNumberOfRows();
+            Row row = Database.sheet.createRow(0);
+            Database.rows = Database.sheet.getPhysicalNumberOfRows();
 
             for (int i = 0; i < array.length; i++) {
                 Cell cell = row.createCell(i);
                 cell.setCellValue(array[i]);
             }
 
-            try (FileOutputStream outputStream = new FileOutputStream("C:/Users/berri/OneDrive/Escritorio/Proyectos/c13/Modulo  3 - Java/projectFinal/database.xlsx")) {
-                Createbasedate.workbook.write(outputStream);
+            try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+                Database.workbook.write(outputStream);
             }catch (Exception e){
                 e.printStackTrace();
             }

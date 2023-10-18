@@ -1,15 +1,16 @@
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.Scanner;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Animal{
-    int id;
+    private int id;
     String name;
     int age;
     String race;
@@ -20,9 +21,9 @@ public class Animal{
 
     public Animal() throws IOException {
         try {
-            Createbasedate.newBasedate(); // Asegúrate de que el workbook esté inicializado
+            Database.newBasedate(); // Asegúrate de que el workbook esté inicializado
             String[] titlesBasedate = {"Id", "Name", "Age", "Race", "Specie", "Description"};
-            Tools.createPage("Animal", titlesBasedate);
+            Tools.createSheet("Animal", titlesBasedate);
         } catch (IOException e) {
             // Maneja la excepción si ocurre un problema al inicializar el workbook
             Tools.updateLogger(Level.WARNING, "Algo no salio bien al intentar crar la pagina de exel");
@@ -102,7 +103,7 @@ public class Animal{
     }
 
     public void addAnimal() {
-        Row row = Createbasedate.sheet.createRow(Createbasedate.rows);
+        Row row = Database.sheet.createRow(Database.rows);
         id = (int) Math.floor(Math.random()*1000);
         Object[] newAnimal = {id, name, age, race, specie, description};
 
@@ -111,12 +112,59 @@ public class Animal{
             cell.setCellValue(newAnimal[i].toString());
         }
 
-        try (FileOutputStream outputStream = new FileOutputStream("C:/Users/berri/OneDrive/Escritorio/Proyectos/c13/Modulo  3 - Java/projectFinal/database.xlsx")) {
-            Createbasedate.workbook.write(outputStream);
+        try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+            Database.workbook.write(outputStream);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
+    public void readAnimal() throws IOException {
+        InputStream miexcel;
+        miexcel = new FileInputStream("Database.xlsx");
+        // High level representation of a workbook.
+        // Representación del más alto nivel de la hoja excel.
+        HSSFWorkbook hssfWorkbook = new HSSFWorkbook(miexcel);
+        // We chose the sheet is passed as parameter.
+        // Elegimos la hoja que se pasa por parámetro.
+        HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
+        // An object that allows us to read a row of the excel sheet, and extract from it the cell contents.
+        // Objeto que nos permite leer un fila de la hoja excel, y de aquí extraer el contenido de las celdas.
+        HSSFRow hssfRow;
+        // Initialize the object to read the value of the cell
+        // Inicializo el objeto que leerá el valor de la celda
+        HSSFCell cell;
+        // I get the number of rows occupied on the sheet
+        // Obtengo el número de filas ocupadas en la hoja
+        int rows = hssfSheet.getLastRowNum();
+        // I get the number of columns occupied on the sheet
+        // Obtengo el número de columnas ocupadas en la hoja
+        int cols = 0;
+        // A string used to store the reading cell
+        // Cadena que usamos para almacenar la lectura de la celda
+        String cellValue;
+        // For this example we'll loop through the rows getting the data we want
+        // Para este ejemplo vamos a recorrer las filas obteniendo los datos que queremos
+        for (int r = 1; r < hssfSheet.getLastRowNum(); r++) {
+            hssfRow = hssfSheet.getRow(r);
+            if (hssfRow == null){
+                break;
+            }else{
+                System.out.print("Row: " + r + " -> ");
+                for (int c = 1; c < (cols = hssfRow.getLastCellNum()); c++) {
+                        /*
+                            We have those cell types (tenemos estos tipos de celda):
+                                CELL_TYPE_BLANK, CELL_TYPE_NUMERIC, CELL_TYPE_BLANK, CELL_TYPE_FORMULA, CELL_TYPE_BOOLEAN, CELL_TYPE_ERROR
+                        */
+                    cellValue = String.valueOf(hssfRow.getCell(c));
+                    System.out.print("[Column " + c + ": " + cellValue + "] ");
+                }
+                System.out.println();
+            }
+        }
+    }
+
+
 
 
 }
