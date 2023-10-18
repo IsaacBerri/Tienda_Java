@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class Createbasedate {
+public class Database {
     public static Sheet sheet;
     public static Workbook workbook;
     public static  int rows = 0;
