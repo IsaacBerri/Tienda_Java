@@ -11,7 +11,6 @@ public class Admin extends User {
 
         System.out.println("Ingresa rol");
 String rol = scanner.nextLine();
-
         System.out.println("Fecha de contratacion");
 String fechaContratacion = scanner.nextLine();
 

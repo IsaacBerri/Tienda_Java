@@ -11,6 +11,15 @@ public class Menus {
             throw new RuntimeException(e);
         }
     }
+    static AdoptionProcess register;
+
+    static {
+        try{
+            register = new AdoptionProcess();
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void mainMenu () throws IOException {
         Scanner sc = new Scanner(System.in);
@@ -87,7 +96,8 @@ public class Menus {
                 animal.readAnimal();
                 break;
             case 2:
-                System.out.println("Adoptamos animal");
+                register.registerProcess();
+                register.addRegister();
                 break;
             case 3:
                 System.out.println("Ver proceso de adopcion");
