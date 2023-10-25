@@ -1,30 +1,48 @@
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.logging.Level;
+
 public class Client extends User {
-    String address;
+   String address;
+    int contactNumber;
     int stratum;
 
-    public String getAddress() {
+    Client ()throws IOException{
+        try {
+            Database.newBasedate(); // Asegúrate de que el workbook esté inicializado
+            String[] titlesBasedate = {"Doc Id", "Name", "Address", "Contac Number", "Stratum"};
+            Tools.createSheet("Client", titlesBasedate);
+        } catch (IOException e) {
+            // Maneja la excepción si ocurre un problema al inicializar el workbook
+            Tools.updateLogger(Level.WARNING, "Algo no salio bien al intentar crar la pagina de exel");
+        }
+    }
+    public int getdocId() {
+
+        return docId;
+    }
+
+    public void setName(String name){
+
+        this.name = name;
+    }
+
+    public String getaddress() {
+
         return address;
     }
 
-    public void setAddress() {
-        System.out.println("Address");
-        Scanner sc = new Scanner(System.in);
-        this.address = sc.nextLine();
-    }
+    public void setContactNumber(int contactNumber) {
 
+        this.contactNumber = contactNumber;
+    }
     public int getStratum() {
+
         return stratum;
     }
 
-    public void setStratum() {
-        System.out.println("Stratum");
-        Scanner sc = new Scanner(System.in);
-        this.stratum = sc.nextInt();
+    public void setRace(String race) {
+
+        this.stratum = stratum;
     }
 
-    @Override
-    public String toString() {
-        return "{Name: " + name + "\n DocId: " + docId + "\n Position: " + position + "\n Address: " + address + "\n Stratum: " + stratum + "}";
-    }
 }
