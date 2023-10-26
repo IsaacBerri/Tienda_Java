@@ -4,6 +4,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.*;
 import java.util.Scanner;
@@ -120,51 +123,141 @@ public class Animal{
     }
 
     public void readAnimal() throws IOException {
-        InputStream miexcel;
-        miexcel = new FileInputStream("Database.xlsx");
-        // High level representation of a workbook.
-        // Representación del más alto nivel de la hoja excel.
-        HSSFWorkbook hssfWorkbook = new HSSFWorkbook(miexcel);
-        // We chose the sheet is passed as parameter.
-        // Elegimos la hoja que se pasa por parámetro.
-        HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
-        // An object that allows us to read a row of the excel sheet, and extract from it the cell contents.
-        // Objeto que nos permite leer un fila de la hoja excel, y de aquí extraer el contenido de las celdas.
-        HSSFRow hssfRow;
-        // Initialize the object to read the value of the cell
-        // Inicializo el objeto que leerá el valor de la celda
-        HSSFCell cell;
-        // I get the number of rows occupied on the sheet
-        // Obtengo el número de filas ocupadas en la hoja
-        int rows = hssfSheet.getLastRowNum();
-        // I get the number of columns occupied on the sheet
-        // Obtengo el número de columnas ocupadas en la hoja
-        int cols = 0;
-        // A string used to store the reading cell
-        // Cadena que usamos para almacenar la lectura de la celda
-        String cellValue;
-        // For this example we'll loop through the rows getting the data we want
-        // Para este ejemplo vamos a recorrer las filas obteniendo los datos que queremos
-        for (int r = 1; r < hssfSheet.getLastRowNum(); r++) {
-            hssfRow = hssfSheet.getRow(r);
-            if (hssfRow == null){
-                break;
-            }else{
-                System.out.print("Row: " + r + " -> ");
-                for (int c = 1; c < (cols = hssfRow.getLastCellNum()); c++) {
-                        /*
-                            We have those cell types (tenemos estos tipos de celda):
-                                CELL_TYPE_BLANK, CELL_TYPE_NUMERIC, CELL_TYPE_BLANK, CELL_TYPE_FORMULA, CELL_TYPE_BOOLEAN, CELL_TYPE_ERROR
-                        */
-                    cellValue = String.valueOf(hssfRow.getCell(c));
-                    System.out.print("[Column " + c + ": " + cellValue + "] ");
-                }
-                System.out.println();
+        for (int i = 0; i < Database.rows - 1; i++) {
+            Row row = Database.sheet.getRow(i + 1 );
+            String[] dataAnimal = new String[row.getLastCellNum()];
+            for (int j = 0; j < row.getLastCellNum(); j++) {
+                Cell cell = row.getCell(j);
+                dataAnimal[j] = cell.getStringCellValue();
+            }
+            System.out.println("Id: " + dataAnimal[0] + " | Name: " + dataAnimal[1] + " | Age: " + dataAnimal[2] + " | Specie: " + dataAnimal[3] + " | Race: " + dataAnimal[4] + " | Description: " + dataAnimal[5]);
+        }
+    }
+
+    public void updateAnimal() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Ingrese el ID del animal que desea actualizar: ");
+        String targetId = scanner.nextLine();
+        int rowIndexToUpdate = 0;
+        for (int i = 0; i < Database.rows - 1; i++) {
+            Row row = Database.sheet.getRow(i + 1);
+            Cell cell = row.getCell(1);
+            if (targetId.equals(cell.getStringCellValue())){
+                rowIndexToUpdate = i + 1;
+            }
+        }
+        if (rowIndexToUpdate != 0){
+            System.out.println("Que deseas actualizar? \n 1- Name \n 2- Age \n 3- Specie \n 4- Race \n 5- Description");
+            int option = scanner.nextInt();
+            Row row = Database.sheet.getRow(rowIndexToUpdate);
+            switch (option) {
+                case 1:
+                    Cell cellName = row.getCell(1);
+                    System.out.println("Ingresa el nuevo valor para actualizar");
+                    String newName = scanner.next();
+                    cellName.setCellValue(newName);
+                    try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+                        Database.workbook.write(outputStream);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+                case 2:
+                    Cell cellAge = row.getCell(2);
+                    System.out.println("Ingrese el nuevo valor para actualizar");
+                    String newAge = scanner.next();
+                    cellAge.setCellValue(newAge);
+                    try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+                        Database.workbook.write(outputStream);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+                case 3:
+                    Cell cellSpecie = row.createCell(3);
+                    System.out.println("Ingrese el valor para actualizar");
+                    String newSpecie = scanner.next();
+                    cellSpecie.setCellValue(newSpecie);
+                    try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+                        Database.workbook.write(outputStream);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+                case 4:
+                    Cell cellRace = row.createCell(4);
+                    System.out.println("Ingrese el valor para actualizar");
+                    String newRace = scanner.next();
+                    cellRace.setCellValue(newRace);
+                    try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+                        Database.workbook.write(outputStream);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+                case 5:
+                    Cell cellDescription = row.createCell(5);
+                    System.out.println("Ingrese el valor para actualizar");
+                    String newDescription = scanner.next();
+                    cellDescription.setCellValue(newDescription);
+                    try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+                        Database.workbook.write(outputStream);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
             }
         }
     }
 
+    public void deleteAnimal() throws IOException {
+        System.out.println("Ingrese el ID del animal a eliminar");
+        String rowId = sc.nextLine();
+        int rowIndexToDelete = 0; // Reemplaza con el índice de la fila que deseas eliminar
+        for (int i = 0; i < Database.rows - 1; i++) {
+            Row row = Database.sheet.getRow(i + 1);
+            Cell cell = row.getCell(0);
+            if (rowId.equals(cell.getStringCellValue())) {
+                rowIndexToDelete = i + 1;
+                System.out.println("El animal se elimino correctamente");
+            }
+        }
 
 
+        if (rowIndexToDelete < 0 || rowIndexToDelete > Database.sheet.getLastRowNum()) {
+            System.out.println("Índice de fila no válido");
+            return;
+        }
+
+        XSSFSheet sheet = (XSSFSheet) Database.sheet;
+        for (int i = rowIndexToDelete; i < Database.sheet.getLastRowNum(); i++) {
+            XSSFRow currentRow = sheet.getRow(i);
+            XSSFRow nextRow = sheet.getRow(i + 1);
+
+            // Copia los valores de la fila siguiente a la fila actual
+            for (int j = 0; j < currentRow.getLastCellNum(); j++) {
+                XSSFCell currentCell = currentRow.getCell(j);
+                XSSFCell nextCell = nextRow.getCell(j);
+                if (nextCell != null) {
+                    if (currentCell == null) {
+                        currentCell = currentRow.createCell(j);
+                    }
+                    currentCell.setCellValue(nextCell.getStringCellValue()); // Cambia esto según el tipo de celdas
+                }
+            }
+        }
+// Elimina la última fila duplicada
+        int lastRowIndex = sheet.getLastRowNum();
+        XSSFRow lastRow = sheet.getRow(lastRowIndex);
+        sheet.removeRow(lastRow);
+
+        try (FileOutputStream outputStream = new FileOutputStream("database.xlsx")) {
+            Database.workbook.write(outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

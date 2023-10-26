@@ -53,13 +53,9 @@ public class Admin extends User {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-mostrarEmpleados();
-        actualizarEmpleado();
     }
 
     public void mostrarEmpleados() {
-        System.out.println("Empleados agregados:");
         for (int i = 0; i < Database.rows - 1; i++) {
             Row row = Database.sheet.getRow(i + 1 );
             String[] dataEployee = new String[4];

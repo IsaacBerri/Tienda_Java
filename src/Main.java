@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Client rafa = new Client();
-        rafa.addClient();
+        Menus.mainMenu();
     }
 }

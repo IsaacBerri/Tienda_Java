@@ -2,19 +2,18 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import javax.xml.crypto.Data;
 import java.io.*;
+import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 
 public class AdoptionProcess {
-  int idProcess = 123;
-  String nameEmployee = "Diego";
-  String nameClient = "pepe";
-  int idAnimal = 12;
-  String date = "12-12-2003";
+  int idProcess;
+  Date date = new Date();
   String state = "Pendiente";
 
 
@@ -29,11 +28,13 @@ public class AdoptionProcess {
     }
   }
 
-  public void addProcess(){
+  public void addProcess(String employee, String cliente, String animal){
     Row row = Database.sheet.createRow(Database.rows);
-    idProcess = (int)Math.floor(Math.random()*1000);
+    int numRandom =(int)Math.floor(Math.random()*1000);
+    idProcess = numRandom;
+    Client.idProcessAdoption = numRandom;
 
-    Object[] process = {idProcess, nameEmployee, nameClient, idAnimal, date, state};
+    Object[] process = {idProcess, employee, cliente, animal, date, state};
 
     for (int i = 0; i < process.length; i++) {
       Cell cell = row.createCell(i);
@@ -87,7 +88,6 @@ public class AdoptionProcess {
     for (int i = 0; i < Database.rows; i++) {
       Row row = Database.sheet.getRow(i+1);
       String[] date = new String[row.getLastCellNum()];
-
       for (int j = 0; j < row.getLastCellNum(); j++) {
         Cell cell = row.getCell(j);
         String value = cell.getStringCellValue();
